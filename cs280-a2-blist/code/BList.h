@@ -105,7 +105,7 @@ class BList
     {
       BNode *next;    //!< pointer to next BNode
       BNode *prev;    //!< pointer to previous BNode
-      int count;      //!< number of items currently in the node
+      unsigned int count;      //!< number of items currently in the node
       T values[Size]; //!< array of items in the node
 
       //!< Default constructor

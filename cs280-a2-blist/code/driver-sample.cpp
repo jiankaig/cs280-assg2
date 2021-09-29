@@ -1656,7 +1656,7 @@ void testD()
 int main(int argc, char **argv)
 {
    int test ;
-  std::cin>>test;
+  //std::cin>>test;
   if (argc > 1)
     test = std::atoi(argv[1]);
  

@@ -1,5 +1,5 @@
 #include "BList.h"
-
+#include <iostream>//remove before submit!
 template <typename T, unsigned Size>
 BList<T, Size>::BList() : stats_(sizeof(BNode), 0, Size, 0){
   // default constructor
@@ -39,26 +39,30 @@ void BList<T, Size>::push_front(const T& value){
   BNode* ptrPrevNode;
   while(ret != SUCCESS){
     //if node got space, assign to head..
+    //printf("count: %u\t size: %u \n", ptrNode->count, Size);
     if(ptrNode->count < static_cast<int>(Size)){
+      //std::cout<<"BREAKPT\n";
       ptrNode->values[ptrNode->count] = value; // assign value to front, based on count
       ptrNode->count++; //update count
       stats_.ItemCount++;
       ret = SUCCESS;
+      break;
     }
     else if(ptrNode->next == NULL){
       //check next node if it exists
       //create a new node and link it with previous
       ptrPrevNode = ptrNode;
       ptrNode = ptrNode->next;
-      ptrPrevNode = ptrNode;
-      ptrNode = ptrNode->next;
+      //std::cout<<"BREAKPT2\n";
       ptrNode = new BNode();
       ptrNode->prev = ptrPrevNode;
+      ptrPrevNode->next = ptrNode;
       tail_ = ptrNode;
       
     }
     else{
       //next node exists, move pointer to next node
+      //std::cout<<"BREAKPT3\n";
       ptrPrevNode = ptrNode;
       ptrNode = ptrNode->next;
     }
@@ -128,7 +132,7 @@ const T& BList<T, Size>::operator[](int index) const{
   unsigned int countNodes = stats_.NodeCount;
   unsigned int countIndex = index;
   BNode* ptrNode = head_;
-  T* ptrToItem;
+  T* ptrToItem = nullptr;
 
   //loop through nodes
   while(countNodes){
