@@ -1,0 +1,60 @@
+==================== test3_1 ====================
+nodesize is 24
+Node   1 ( 0): 
+
+List: 
+Asize: 1
+Items: 0
+Nodes: 1
+Average items per node: 0
+Node utilization: 0%
+
+
+==================== test3_2 ====================
+nodesize is 32
+Node   1 ( 0): 
+
+List: 
+Asize: 2
+Items: 0
+Nodes: 1
+Average items per node: 0
+Node utilization: 0%
+
+
+==================== test3_4 ====================
+nodesize is 40
+Node   1 ( 0): 
+
+List: 
+Asize: 4
+Items: 0
+Nodes: 1
+Average items per node: 0
+Node utilization: 0%
+
+
+==================== test3_8 ====================
+nodesize is 56
+Node   1 ( 0): 
+
+List: 
+Asize: 8
+Items: 0
+Nodes: 1
+Average items per node: 0
+Node utilization: 0%
+
+
+==================== test3_16 ====================
+nodesize is 88
+Node   1 ( 0): 
+
+List: 
+Asize: 16
+Items: 0
+Nodes: 1
+Average items per node: 0
+Node utilization: 0%
+
+

@@ -32,10 +32,8 @@ void BList<T, Size>::push_back(const T& value){
   State ret = FAIL;
   BNode* ptrNode = head_; //start at head node
   BNode* ptrPrevNode;
-  BNode* ptrCurrNode;
   while(ret != SUCCESS){
     //if node got space, assign to head..
-    //printf("count: %u\t size: %u \n", ptrNode->count, Size);
     if(ptrNode->count < static_cast<int>(Size)){
       //std::cout<<"BREAKPT\n";
       ptrNode->values[ptrNode->count] = value; // assign value to front, based on count
@@ -44,22 +42,20 @@ void BList<T, Size>::push_back(const T& value){
       ret = SUCCESS;
       break;
     }
-    else if(ptrNode->prev == NULL){
+    else if(ptrNode->next == NULL){
       //check prev node if it exists
       //create a new node and link it with previous
-      ptrCurrNode = ptrNode;
+      ptrPrevNode = ptrNode;
       ptrNode = ptrNode->prev;
-      //std::cout<<"BREAKPT2\n";
       ptrNode = new BNode();
-      ptrNode->prev = ptrCurrNode;
-      ptrCurrNode->prev = ptrNode;
-      head_ = ptrNode;
+      ptrNode->prev = ptrPrevNode;
+      ptrPrevNode->next = ptrNode;
+      tail_ = ptrNode;
+      stats_.NodeCount++;
       
     }
     else{
       //prev node exists, move pointer to next node
-      //std::cout<<"BREAKPT3\n";
-      ptrPrevNode = ptrNode;
       ptrNode = ptrNode->next;
     }
   }
