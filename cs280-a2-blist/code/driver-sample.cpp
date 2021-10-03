@@ -1709,10 +1709,10 @@ int main(int argc, char **argv)
       break;
     case 3: 
       test3_1();
-      test3_2();
-      test3_4();
-      test3_8();
-      test3_16();
+      // test3_2();
+      // test3_4();
+      // test3_8();
+      // test3_16();
       break;
     case 4: 
       test4_1();

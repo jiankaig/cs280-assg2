@@ -3,7 +3,14 @@
 template <typename T, unsigned Size>
 BList<T, Size>::BList() : stats_(sizeof(BNode), 0, Size, 0){
   // default constructor
-  head_ = new BNode();
+  try{
+    head_ = new BNode();
+    tail_ = head_;
+
+  }
+  catch (const std::exception& e){
+    throw(BListException(BListException::E_NO_MEMORY, e.what()));
+  }
   stats_.NodeCount++;
   //tail_ = head_;
 }                          
@@ -32,32 +39,46 @@ void BList<T, Size>::push_back(const T& value){
   State ret = FAIL;
   BNode* ptrNode = head_; //start at head node
   BNode* ptrPrevNode;
+  int i=0;
   while(ret != SUCCESS){
-    //if node got space, assign to head..
+     printf("%i ",i);
+    //if node got space, assign to node..
     if(ptrNode->count < static_cast<int>(Size)){
-      //std::cout<<"BREAKPT\n";
       ptrNode->values[ptrNode->count] = value; // assign value to front, based on count
+    std::cout<<"BREAKPT -assign "<<value<<" at "<<&ptrNode->values[ptrNode->count]<<"\n";
       ptrNode->count++; //update count
       stats_.ItemCount++;
       ret = SUCCESS;
       break;
     }
-    else if(ptrNode->next == NULL){
-      //check prev node if it exists
+    else if(ptrNode->next == NULL && ptrNode->count >= Size){
+      //check next node if it exists & node is full
       //create a new node and link it with previous
       ptrPrevNode = ptrNode;
       ptrNode = ptrNode->prev;
-      ptrNode = new BNode();
-      ptrNode->prev = ptrPrevNode;
-      ptrPrevNode->next = ptrNode;
-      tail_ = ptrNode;
-      stats_.NodeCount++;
+      try{
+        ptrNode = new BNode();
+        ptrNode->prev = ptrPrevNode;
+        ptrPrevNode->next = ptrNode;
+        // std::cout<<"BREAKPT - new node created"<<head_<<" | "<<tail_<<"\n";
+        tail_ = ptrNode;
+        // std::cout<<"BREAKPT - new node created"<<head_<<" | "<<tail_<<"\n";
+        stats_.NodeCount++;
+      }
+      catch (const std::exception& e){
+        throw(BListException(BListException::E_NO_MEMORY, e.what()));
+      }
+      
       
     }
+    else if(ptrNode->count < Size){
+      insertAt(value, ptrNode, ptrNode->count);
+    }
     else{
-      //prev node exists, move pointer to next node
+      //next node exists, move pointer to next node
       ptrNode = ptrNode->next;
     }
+    i++;
   }
   
 }
@@ -83,13 +104,19 @@ void BList<T, Size>::push_front(const T& value){
     }
     else{
       //create new node and place in front of head node
-      BNode* NewNode = new BNode();
-      PrevNode = ptrNode;
-      ptrNode = NewNode;
-      PrevNode->prev = NewNode;
-      NewNode->next = PrevNode;
-      head_ = NewNode;
-      stats_.NodeCount++;
+      BNode* NewNode = nullptr;
+      try{
+        NewNode = new BNode();
+        PrevNode = ptrNode;
+        ptrNode = NewNode;
+        PrevNode->prev = NewNode;
+        NewNode->next = PrevNode;
+        head_ = NewNode;
+        stats_.NodeCount++;
+      }
+      catch (const std::exception& e){
+        throw(BListException(BListException::E_NO_MEMORY, e.what()));
+      }
     }
   }
   
@@ -97,8 +124,67 @@ void BList<T, Size>::push_front(const T& value){
 
 template <typename T, unsigned Size>
 void BList<T, Size>::insert(const T& value){
-  if(head_->values[0] == value)
-    return;
+  std::cout<<"BREAKPT - insert START - value: "<<value<<"\n";
+  BNode* ptrNode = head_; //start at head node
+  int nodePosition = 0;
+  int listPosition = 0;
+
+  //find position to insert
+  //search through every node
+  for(int i=0; i<stats_.NodeCount; i++){
+    for(unsigned int j=0; j< Size; j++){
+      std::cout<<"DEBUG: "<<ptrNode->values[j]<<" at "<<&ptrNode->values[j]<<std::endl;
+      
+      // base case: first item just push front
+      if(stats_.ItemCount == 0){
+        printf("push front\n");
+        push_front(value); //basecase
+        return;
+      }
+      
+      
+
+      if(value < ptrNode->values[j] && ptrNode->count >= Size){
+        std::cout<<"SPLIT\n";
+        SplitNode(ptrNode, value);
+        break;
+      }
+
+      // insert(before item) when value less than item
+      if(value < ptrNode->values[j] /*&& ptrNode->count < Size*/){
+        //insert value before
+        std::cout<<"insertAt\n";
+        insertAt(value, ptrNode, j);
+        return;
+      }
+      else if(value < ptrNode->values[j]&& ptrNode->count == Size){
+        std::cout<<"SPLIT\n";
+        SplitNode(ptrNode, value);//split node
+        break; //go to next node
+      }
+
+      // push back when at last node 
+      if(ptrNode->next == nullptr){
+        printf("push back\n");
+        push_back(value);
+        return;
+      }
+
+      if(j >= ptrNode->count && value < ptrNode->next->values[0]){
+        //check next node[0], if smaller, insert here
+        std::cout<<"breakpt\n";
+        ptrNode->values[j] = value;
+        return;
+      }
+      else 
+        break; //go to next node
+      
+      nodePosition++;
+    }
+    ptrNode = ptrNode->next;
+    listPosition++;
+  }
+  //if no suitable position, just pushback
 }
 
 template <typename T, unsigned Size>
@@ -215,4 +301,73 @@ template <typename T, unsigned Size>
 const typename BList<T, Size>::BNode* BList<T, Size>::GetHead() const
 {
   return head_;
+}
+
+template <typename T, unsigned Size>
+void BList<T, Size>::copy_to_(T* arrSrc, unsigned int size, T* arrDest){
+  for(unsigned int i = 0; i<size ; i++){
+    arrDest[i] = arrSrc[i];
+  }
+}
+
+template <typename T, unsigned Size>
+void BList<T, Size>::insertAt(T value, BNode* ptrNode, int insertPos){
+  if(ptrNode->count < Size){
+    //insert and shift the rest up by one
+    //shift current values up by one position
+    unsigned int position = ptrNode->count;
+    for(int i=position-1; i>=insertPos; i--){
+      ptrNode->values[i+1] = ptrNode->values[i];
+    }
+    ptrNode->values[insertPos] = value; //insert value at front of node
+    ptrNode->count++; //update count
+    stats_.ItemCount++;
+    return;
+  }
+}
+
+template <typename T, unsigned Size>
+void BList<T, Size>::SplitNode(BNode* &ptrNode, T value){
+  //create two sub array and assign each with values
+  T* arrLeft = new T[Size];
+  T* arrRight = new T[Size];
+  unsigned int mid = ptrNode->count/2;
+  unsigned int arrLeftIndex = 0;
+  unsigned int arrRightIndex = 0;
+  for(unsigned int i=0; i<ptrNode->count; i++){
+    if(i <= mid)
+      arrLeft[arrLeftIndex++] = ptrNode->values[i];
+    else if(i > mid)
+      arrRight[arrRightIndex++] = ptrNode->values[i];
+  }
+  //create two nodes, link them into BList
+  //BNode* NewLeftNode = new BNode();
+  BNode* NewRightNode = new BNode();
+
+  BNode* PrevNode = ptrNode->prev;
+  BNode* NextNode = ptrNode->next;
+  if(PrevNode != nullptr){
+    PrevNode->next = ptrNode;
+    ptrNode->prev = PrevNode;
+  }
+
+  ptrNode->next = NewRightNode;
+  NewRightNode->prev = ptrNode;
+  
+  if(NextNode != nullptr){
+    NewRightNode->next = NextNode;
+    NextNode->prev = NewRightNode;
+  }
+
+  ptrNode->count = arrLeftIndex;
+  NewRightNode->count = arrRightIndex;
+
+  copy_to_(arrLeft, Size, ptrNode->values);
+  copy_to_(arrRight, Size, NewRightNode->values);
+  //printf("%p, %p\n", (void*)ptrNode, (void*)ptrNode->next);
+  //printf("%p, %p, %p, %p\n", (void*)PrevNode, (void*)NewLeftNode, (void*)NewRightNode, (void*)NextNode);
+  //delete splited node
+  //delete [] ptrNode;
+  //ptrNode = NewLeftNode;
+  stats_.NodeCount++;
 }
