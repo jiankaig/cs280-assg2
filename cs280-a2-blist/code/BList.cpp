@@ -346,7 +346,7 @@ void BList<T, Size>::SplitNode(BNode* &ptrNode){
   //create two sub array and assign each with values
   T* arrLeft = new T[Size];
   T* arrRight = new T[Size];
-  unsigned int mid = static_cast<unsigned int>(ptrNode->count/2);
+  unsigned int mid = static_cast<unsigned int>(ptrNode->count/2 - 0.5);
   unsigned int arrLeftIndex = 0;
   unsigned int arrRightIndex = 0;
   for(unsigned int i=0; i<ptrNode->count; i++){
@@ -376,7 +376,7 @@ void BList<T, Size>::SplitNode(BNode* &ptrNode){
 
   ptrNode->count = arrLeftIndex;
   NewRightNode->count = arrRightIndex;
-  printf("DEBUG in split: %u, %u\n", arrLeftIndex, arrRightIndex);
+  // printf("DEBUG in split: %u, %u\n", arrLeftIndex, arrRightIndex);
 
   copy_to_(arrLeft, Size, ptrNode->values);
   copy_to_(arrRight, Size, NewRightNode->values);
