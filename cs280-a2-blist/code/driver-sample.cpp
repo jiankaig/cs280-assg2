@@ -486,7 +486,6 @@ void test4_1()
     //std::cout << "==========================\n";
   }
   DumpList(bl, false);
-
   print_subscript(bl);
   std::cout << std::endl << std::endl;
 
@@ -1710,9 +1709,9 @@ int main(int argc, char **argv)
     case 3: 
       test3_1();
       test3_2();
-      // test3_4();
-      // test3_8();
-      // test3_16();
+      test3_4();
+      test3_8();
+      test3_16();
       break;
     case 4: 
       test4_1();
@@ -1720,13 +1719,15 @@ int main(int argc, char **argv)
       test4_4();
       test4_8();
       test4_16();
-     
+      break;
+    case 5: 
       test5_1();
       test5_2();
       test5_4();
       test5_8();
       test5_16();
-       
+      break;
+    case 6: 
       test6_16();
       test6_64();
       test6_512();

@@ -45,7 +45,7 @@ void BList<T, Size>::push_back(const T& value){
     //if node got space, assign to node..
     if(ptrNode->count < static_cast<int>(Size)){
       ptrNode->values[ptrNode->count] = value; // assign value to front, based on count
-      std::cout<<"BREAKPT -assign "<<value<<" at "<<&ptrNode->values[ptrNode->count]<<"\n";
+      // std::cout<<"BREAKPT -assign "<<value<<" at "<<&ptrNode->values[ptrNode->count]<<"\n";
       ptrNode->count++; //update count
       stats_.ItemCount++;
       ret = SUCCESS;
@@ -124,7 +124,7 @@ void BList<T, Size>::push_front(const T& value){
 
 template <typename T, unsigned Size>
 void BList<T, Size>::insert(const T& value){
-  std::cout<<"BREAKPT - insert START - value: "<<value<<"\n";
+  // std::cout<<"BREAKPT - insert START - items: "<<stats_.ItemCount<<" value: "<<value<<"\n";
   BNode* ptrNode = head_; //start at head node
   int nodePosition = 0;
   int listPosition = 0;
@@ -133,19 +133,17 @@ void BList<T, Size>::insert(const T& value){
   //search through every node
   for(int i=0; i<stats_.NodeCount; i++){
     for(unsigned int j=0; j< Size; j++){
-      std::cout<<"DEBUG: "<<ptrNode->values[j]<<" at "<<&ptrNode->values[j]<<std::endl;
+      // std::cout<<"DEBUG: "<<ptrNode->values[j]<<" at "<<&ptrNode->values[j]<<std::endl;
       // base case: first item just push front
       if(stats_.ItemCount == 0){
-        printf("push front\n");
+        // printf("push front\n");
         push_front(value); //basecase
         return;
       }
-      
-      
 
-      // std::cout<<"SPLIT0: "<<ptrNode->count<<"\n";
+      //  std::cout<<"SPLIT0: "<<ptrNode->count<<"\n";
       if(value < ptrNode->values[j] && ptrNode->count >= Size){
-        std::cout<<"SPLIT1\n";
+        // std::cout<<"SPLIT1\n";
         SplitNode(ptrNode);
         //break;
       }
@@ -154,7 +152,7 @@ void BList<T, Size>::insert(const T& value){
       if(value < ptrNode->values[j] /*&& ptrNode->count < Size*/){
         // special case, where after split, node may be full
         if(Size == 1){
-          printf("spceial case\n");
+          // printf("spceial case\n");
           BNode* NextNode = ptrNode->next;
           insertAt(ptrNode->values[0], NextNode, 0);
           ptrNode->values[0] = (T)0;
@@ -165,30 +163,27 @@ void BList<T, Size>::insert(const T& value){
         }
         else{
           //insert value before, normal case
-          std::cout<<"insertAt\n";
+          // std::cout<<"insertAt\n";
           insertAt(value, ptrNode, j);
           return;
-        }
-        
-      }
-      else if(value < ptrNode->values[j]&& ptrNode->count == Size){
-        std::cout<<"SPLIT2\n";
-        SplitNode(ptrNode);//split node
-        break; //go to next node
+        } 
       }
 
       // push back when at last node, last item
       if(ptrNode->next == nullptr && j+1 == ptrNode->count){
-        printf("push back\n");
+        // printf("push back\n");
         push_back(value);
         return;
       }
 
       if(j >= ptrNode->count && value < ptrNode->next->values[0]){
         //check next node[0], if smaller, insert here
-        std::cout<<"breakpt\n";
-        ptrNode->values[j] = value;
+        // std::cout<<"breakpt\n";
+        insertAt(value, ptrNode, j);
         return;
+      }
+      else{
+        //need to insert at next node..
       }
       
       
@@ -215,65 +210,57 @@ void BList<T, Size>::remove_by_value(const T& value){
 template <typename T, unsigned Size>
 int BList<T, Size>::find(const T& value) const{
   // returns index, -1 if not found
-  if(head_->values[0] == value)
-    return -1;
+  BNode* ptr = head_;
+  int ret_lsb = -1, ret_msb = 0;
+  while(ptr){
+    ret_lsb = SearchFor(value, ptr);
+    if(ret_lsb >= 0)
+      return (ret_lsb + ret_msb);
+    ret_msb += ptr->count; 
+    ptr = ptr->next;
+  }
   return -1;
 }       
 
 template <typename T, unsigned Size>
 T& BList<T, Size>::operator[](int index){
   // for l-values
-  //if(index > stats_.ItemCount)
-    //return ERROR; //out of range
+  if(index > stats_.ItemCount)
+    throw BListException(BListException::E_BAD_INDEX, "invalid index!");
 
-  int countNodes = stats_.NodeCount;
-  int countIndex = index;
+  unsigned int position = index + 1;
   BNode* ptrNode = head_;
 
   //loop through nodes
-  while(countNodes){
-    //loop through items in node
-    int countItems = ptrNode->count;
-    while(countItems){
-      if(countIndex == 0){
-        return ptrNode->values[countItems];
-      }
-      countIndex--;
-      countItems--;
-    }
+  while(ptrNode){
+    //find position
+    if(position <= ptrNode->count)
+      break;
+    position -= ptrNode->count;
     ptrNode = ptrNode->next; // go to next node
-    countNodes--;
   }
-  return ptrNode->values[0];
+  return ptrNode->values[position-1];
 }            
 
 template <typename T, unsigned Size>
 const T& BList<T, Size>::operator[](int index) const{
+  // std::cout<<"[] rvalue\n";
   // for r-values
   if(index > stats_.ItemCount)
-    return *ptrToItem; //out of range
+    throw BListException(BListException::E_BAD_INDEX, "invalid index!");
 
-  unsigned int countNodes = stats_.NodeCount;
-  unsigned int countIndex = index;
+  unsigned int position = index + 1;
   BNode* ptrNode = head_;
-  T* ptrToItem = nullptr;
 
   //loop through nodes
-  while(countNodes){
-    //loop through items in node
-    unsigned int countItems = static_cast<unsigned int>(ptrNode->count);
-    while(countItems){
-      if(countIndex == 0){
-        *ptrToItem = ptrNode->values[countItems];
-        return *ptrToItem;
-      }
-      countIndex--;
-      countItems--;
-    }
+  while(ptrNode){
+    //find position
+    if(position <= ptrNode->count)
+      break;
+    position -= ptrNode->count;
     ptrNode = ptrNode->next; // go to next node
-    countNodes--;
   }
-  return *ptrToItem;
+  return ptrNode->values[position-1];
 } 
 
 template <typename T, unsigned Size>
@@ -287,17 +274,6 @@ void BList<T, Size>::clear(){
   // delete all nodes
 }          
 
-// template <typename T, unsigned Size>
-// size_t BList<T, Size>::nodesize(){
-//   // so the allocator knows the size
-//   return stats_.NodeSize;
-// } 
-
-// For debugging
-// template <typename T, unsigned Size>
-// const BList<T, Size>::BNode* BList<T, Size>::GetHead() const{
-//   return head_;
-// }
 template <typename T, unsigned Size>
 BListStats BList<T, Size>::GetStats() const{
   return stats_;
@@ -332,9 +308,10 @@ void BList<T, Size>::insertAt(T value, BNode* ptrNode, int insertPos){
     unsigned int position = ptrNode->count;
     for(int i=position-1; i>=insertPos; i--){
       ptrNode->values[i+1] = ptrNode->values[i];
-      std::cout<<"DEBUG: shifting "<<ptrNode->values[i]<<std::endl;
+      // std::cout<<"DEBUG: shifting "<<ptrNode->values[i]<<std::endl;
     }
     ptrNode->values[insertPos] = value; //insert value at front of node
+    // std::cout<<"insert in "<< ptrNode->values[insertPos]<<std::endl;
     ptrNode->count++; //update count
     stats_.ItemCount++;
     return;
@@ -386,4 +363,15 @@ void BList<T, Size>::SplitNode(BNode* &ptrNode){
   //delete [] ptrNode;
   //ptrNode = NewLeftNode;
   stats_.NodeCount++;
+}
+
+template <typename T, unsigned Size>
+int BList<T, Size>::SearchFor(const T& value, BNode* node)const{
+  T* array = node->values;
+  int count = node->count;
+  for(int i = 0; i < count; i++){
+    if(value == array[i])
+      return i;
+  }
+  return -1;
 }
