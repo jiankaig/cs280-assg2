@@ -41,11 +41,11 @@ void BList<T, Size>::push_back(const T& value){
   BNode* ptrPrevNode;
   int i=0;
   while(ret != SUCCESS){
-     printf("%i ",i);
+    //  printf("%i ",i);
     //if node got space, assign to node..
     if(ptrNode->count < static_cast<int>(Size)){
       ptrNode->values[ptrNode->count] = value; // assign value to front, based on count
-    std::cout<<"BREAKPT -assign "<<value<<" at "<<&ptrNode->values[ptrNode->count]<<"\n";
+      std::cout<<"BREAKPT -assign "<<value<<" at "<<&ptrNode->values[ptrNode->count]<<"\n";
       ptrNode->count++; //update count
       stats_.ItemCount++;
       ret = SUCCESS;
@@ -134,7 +134,6 @@ void BList<T, Size>::insert(const T& value){
   for(int i=0; i<stats_.NodeCount; i++){
     for(unsigned int j=0; j< Size; j++){
       std::cout<<"DEBUG: "<<ptrNode->values[j]<<" at "<<&ptrNode->values[j]<<std::endl;
-      
       // base case: first item just push front
       if(stats_.ItemCount == 0){
         printf("push front\n");
@@ -144,27 +143,42 @@ void BList<T, Size>::insert(const T& value){
       
       
 
+      // std::cout<<"SPLIT0: "<<ptrNode->count<<"\n";
       if(value < ptrNode->values[j] && ptrNode->count >= Size){
-        std::cout<<"SPLIT\n";
-        SplitNode(ptrNode, value);
-        break;
+        std::cout<<"SPLIT1\n";
+        SplitNode(ptrNode);
+        //break;
       }
 
       // insert(before item) when value less than item
       if(value < ptrNode->values[j] /*&& ptrNode->count < Size*/){
-        //insert value before
-        std::cout<<"insertAt\n";
-        insertAt(value, ptrNode, j);
-        return;
+        // special case, where after split, node may be full
+        if(Size == 1){
+          printf("spceial case\n");
+          BNode* NextNode = ptrNode->next;
+          insertAt(ptrNode->values[0], NextNode, 0);
+          ptrNode->values[0] = (T)0;
+          ptrNode->count--;
+          stats_.ItemCount--;
+          insertAt(value, ptrNode, j);
+          return;
+        }
+        else{
+          //insert value before, normal case
+          std::cout<<"insertAt\n";
+          insertAt(value, ptrNode, j);
+          return;
+        }
+        
       }
       else if(value < ptrNode->values[j]&& ptrNode->count == Size){
-        std::cout<<"SPLIT\n";
-        SplitNode(ptrNode, value);//split node
+        std::cout<<"SPLIT2\n";
+        SplitNode(ptrNode);//split node
         break; //go to next node
       }
 
-      // push back when at last node 
-      if(ptrNode->next == nullptr){
+      // push back when at last node, last item
+      if(ptrNode->next == nullptr && j+1 == ptrNode->count){
         printf("push back\n");
         push_back(value);
         return;
@@ -176,8 +190,7 @@ void BList<T, Size>::insert(const T& value){
         ptrNode->values[j] = value;
         return;
       }
-      else 
-        break; //go to next node
+      
       
       nodePosition++;
     }
@@ -312,12 +325,14 @@ void BList<T, Size>::copy_to_(T* arrSrc, unsigned int size, T* arrDest){
 
 template <typename T, unsigned Size>
 void BList<T, Size>::insertAt(T value, BNode* ptrNode, int insertPos){
+  // std::cout<<"DEBUG: count  "<<ptrNode->count<<std::endl;
   if(ptrNode->count < Size){
     //insert and shift the rest up by one
     //shift current values up by one position
     unsigned int position = ptrNode->count;
     for(int i=position-1; i>=insertPos; i--){
       ptrNode->values[i+1] = ptrNode->values[i];
+      std::cout<<"DEBUG: shifting "<<ptrNode->values[i]<<std::endl;
     }
     ptrNode->values[insertPos] = value; //insert value at front of node
     ptrNode->count++; //update count
@@ -327,11 +342,11 @@ void BList<T, Size>::insertAt(T value, BNode* ptrNode, int insertPos){
 }
 
 template <typename T, unsigned Size>
-void BList<T, Size>::SplitNode(BNode* &ptrNode, T value){
+void BList<T, Size>::SplitNode(BNode* &ptrNode){
   //create two sub array and assign each with values
   T* arrLeft = new T[Size];
   T* arrRight = new T[Size];
-  unsigned int mid = ptrNode->count/2;
+  unsigned int mid = static_cast<unsigned int>(ptrNode->count/2);
   unsigned int arrLeftIndex = 0;
   unsigned int arrRightIndex = 0;
   for(unsigned int i=0; i<ptrNode->count; i++){
@@ -361,6 +376,7 @@ void BList<T, Size>::SplitNode(BNode* &ptrNode, T value){
 
   ptrNode->count = arrLeftIndex;
   NewRightNode->count = arrRightIndex;
+  printf("DEBUG in split: %u, %u\n", arrLeftIndex, arrRightIndex);
 
   copy_to_(arrLeft, Size, ptrNode->values);
   copy_to_(arrRight, Size, NewRightNode->values);

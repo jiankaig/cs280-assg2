@@ -151,7 +151,7 @@ class BList
     T* ptrToItem;
     void copy_to_(T* arrSrc, unsigned int size, T* arrDest);
     void insertAt(T value, BNode* node, int position);
-    void SplitNode(BNode* &node, T value);
+    void SplitNode(BNode* &node);
 
 };
 
