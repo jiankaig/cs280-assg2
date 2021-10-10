@@ -3,7 +3,8 @@
         {
             "name": "Mac",
             "includePath": [
-                "${default}"
+                "${default}",
+                "${workspaceFolder}/cs280-a2-blist/make/include"
             ],
             "compilerPath": "/usr/local/bin/gcc",
             "cStandard": "gnu17",

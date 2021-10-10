@@ -343,9 +343,9 @@ void test3_2()
   for (unsigned i = 0; i < size; i++) 
   {
     bl.insert(ia[i]);
-    //DumpList(bl, true);
-    //DumpList(bl);
-    //std::cout << "==========================\n";
+    DumpList(bl, true);
+    DumpList(bl);
+    std::cout << "==========================\n";
   }
   DumpList(bl, false);
   DumpList(bl, true);
