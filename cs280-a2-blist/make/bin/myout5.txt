@@ -1,0 +1,171 @@
+==================== test5_1 ====================
+nodesize is 24
+List: 99 24 28 32 58 96 66 59 12 56 34 39 31 45 11 73 
+Node   1 ( 1): 99 
+Node   2 ( 1): 24 
+Node   3 ( 1): 28 
+Node   4 ( 1): 32 
+Node   5 ( 1): 58 
+Node   6 ( 1): 96 
+Node   7 ( 1): 66 
+Node   8 ( 1): 59 
+Node   9 ( 1): 12 
+Node  10 ( 1): 56 
+Node  11 ( 1): 34 
+Node  12 ( 1): 39 
+Node  13 ( 1): 31 
+Node  14 ( 1): 45 
+Node  15 ( 1): 11 
+Node  16 ( 1): 73 
+
+Found 99 at index 0
+Found 24 at index 1
+Found 28 at index 2
+Found 32 at index 3
+Found 58 at index 4
+Found 96 at index 5
+Found 66 at index 6
+Found 59 at index 7
+Found 12 at index 8
+Found 56 at index 9
+Found 34 at index 10
+Found 39 at index 11
+Found 31 at index 12
+Found 45 at index 13
+Found 11 at index 14
+Found 73 at index 15
+
+Asize: 1
+Items: 16
+Nodes: 16
+Average items per node: 1
+Node utilization: 100%
+
+
+==================== test5_2 ====================
+nodesize is 32
+List: 40 78 38 93 12 83 72 73 64 88 63 81 52 85 20 59 
+Node   1 ( 2): 40 78 
+Node   2 ( 2): 38 93 
+Node   3 ( 2): 12 83 
+Node   4 ( 2): 72 73 
+Node   5 ( 2): 64 88 
+Node   6 ( 2): 63 81 
+Node   7 ( 2): 52 85 
+Node   8 ( 2): 20 59 
+
+Found 40 at index 0
+Found 78 at index 1
+Found 38 at index 2
+Found 93 at index 3
+Found 12 at index 4
+Found 83 at index 5
+Found 72 at index 6
+Found 73 at index 7
+Found 64 at index 8
+Found 88 at index 9
+Found 63 at index 10
+Found 81 at index 11
+Found 52 at index 12
+Found 85 at index 13
+Found 20 at index 14
+Found 59 at index 15
+
+Asize: 2
+Items: 16
+Nodes: 8
+Average items per node: 2
+Node utilization: 100%
+
+
+==================== test5_4 ====================
+nodesize is 40
+List: 13 11 77 39 28 59 20 64 52 80 40 30 18 69 56 70 
+Node   1 ( 4): 13 11 77 39 
+Node   2 ( 4): 28 59 20 64 
+Node   3 ( 4): 52 80 40 30 
+Node   4 ( 4): 18 69 56 70 
+
+Found 13 at index 0
+Found 11 at index 1
+Found 77 at index 2
+Found 39 at index 3
+Found 28 at index 4
+Found 59 at index 5
+Found 20 at index 6
+Found 64 at index 7
+Found 52 at index 8
+Found 80 at index 9
+Found 40 at index 10
+Found 30 at index 11
+Found 18 at index 12
+Found 69 at index 13
+Found 56 at index 14
+Found 70 at index 15
+
+Asize: 4
+Items: 16
+Nodes: 4
+Average items per node: 4
+Node utilization: 100%
+
+
+==================== test5_8 ====================
+nodesize is 56
+List: 74 84 73 72 88 66 49 12 46 68 59 34 51 28 50 30 
+Node   1 ( 8): 74 84 73 72 88 66 49 12 
+Node   2 ( 8): 46 68 59 34 51 28 50 30 
+
+Found 74 at index 0
+Found 84 at index 1
+Found 73 at index 2
+Found 72 at index 3
+Found 88 at index 4
+Found 66 at index 5
+Found 49 at index 6
+Found 12 at index 7
+Found 46 at index 8
+Found 68 at index 9
+Found 59 at index 10
+Found 34 at index 11
+Found 51 at index 12
+Found 28 at index 13
+Found 50 at index 14
+Found 30 at index 15
+
+Asize: 8
+Items: 16
+Nodes: 2
+Average items per node: 8
+Node utilization: 100%
+
+
+==================== test5_16 ====================
+nodesize is 88
+List: 21 11 27 97 58 56 29 77 70 67 31 86 91 93 32 18 
+Node   1 (16): 21 11 27 97 58 56 29 77 70 67 31 86 91 93 32 18 
+
+Found 21 at index 0
+Found 11 at index 1
+Found 27 at index 2
+Found 97 at index 3
+Found 58 at index 4
+Found 56 at index 5
+Found 29 at index 6
+Found 77 at index 7
+Found 70 at index 8
+Found 67 at index 9
+Found 31 at index 10
+Found 86 at index 11
+Found 91 at index 12
+Found 93 at index 13
+Found 32 at index 14
+Found 18 at index 15
+
+Asize: 16
+Items: 16
+Nodes: 1
+Average items per node: 16
+Node utilization: 100%
+
+

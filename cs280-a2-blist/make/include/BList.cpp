@@ -1,5 +1,7 @@
 #include "BList.h"
 #include <iostream>//remove before submit!
+// #define DEBUG_
+
 template <typename T, unsigned Size>
 BList<T, Size>::BList() : stats_(sizeof(BNode), 0, Size, 0){
   // default constructor
@@ -24,7 +26,16 @@ BList<T, Size>::BList(const BList &rhs){
 template <typename T, unsigned Size>
 BList<T, Size>::~BList(){
   // destructor
-  
+  while (head_)
+  {
+    BNode* curNode = head_;
+    head_ = head_->next; // get next
+    delete curNode; // delete current
+  }
+  // set all to initial value
+  head_ = tail_ = nullptr;
+  stats_.NodeCount = stats_.ItemCount = 0;
+  // unsorted = true;
 }                         
 
 template <typename T, unsigned Size>
@@ -124,7 +135,9 @@ void BList<T, Size>::push_front(const T& value){
 
 template <typename T, unsigned Size>
 void BList<T, Size>::insert(const T& value){
-  // std::cout<<value<<" ";
+  #ifdef DEBUG_
+    std::cout<<"inserting "<<value<<" ";
+  #endif
   BNode* ptrNode = head_; //start at head node
 
   //find position to insert
@@ -139,14 +152,18 @@ void BList<T, Size>::insert(const T& value){
       // split node when value < item and node is full
       if(value < ptrNode->values[j] && ptrNode->count >= Size){
         SplitNode(ptrNode);
-          // std::cout<<" ||| ";
+          #ifdef DEBUG_
+            std::cout<<" ||| ";
+          #endif
       }
 
-      // insert(before item) when value less than item
-      if(value < ptrNode->values[j]){
+      // insert(before item) when value less than item and not check unassigned data
+      if(value < ptrNode->values[j] && j < ptrNode->count){
         // special case, where after split, node may be full
         if(Size == 1){
-          // std::cout<<" || ";
+          #ifdef DEBUG_
+            std::cout<<" || ";
+          #endif
           insertAt(ptrNode->values[0], ptrNode->next, 0);
           ptrNode->values[0] = (T)0;
           ptrNode->count--;
@@ -155,7 +172,9 @@ void BList<T, Size>::insert(const T& value){
           return;
         }
         else{
-          // std::cout<<" | ";
+          #ifdef DEBUG_
+            std::cout<<" | "<<ptrNode->values[j];
+          #endif
           //insert value before, normal case
           insertAt(value, ptrNode, j);
           return;
@@ -170,7 +189,9 @@ void BList<T, Size>::insert(const T& value){
             insertAt(value, ptrNode->next, ptrNode->next->count);
           else if(Size ==1)
             insertAt(value, ptrNode->next, 0);
-          // std::cout<<" / ";
+          #ifdef DEBUG_
+            std::cout<<" / ";
+          #endif
           return;
         }
         else{
@@ -184,7 +205,9 @@ void BList<T, Size>::insert(const T& value){
       if(j >= ptrNode->count && value < ptrNode->next->values[0]){
         //check next node[0], if smaller, insert here
         insertAt(value, ptrNode, j);
-          // std::cout<<" /// ";
+        #ifdef DEBUG_
+          std::cout<<" /// ";
+        #endif
         return;
       }
       else{
@@ -311,10 +334,14 @@ void BList<T, Size>::insertAt(T value, BNode* ptrNode, int insertPos){
     unsigned int position = ptrNode->count;
     for(int i=position-1; i>=insertPos; i--){
       ptrNode->values[i+1] = ptrNode->values[i];
-      // std::cout<<"DEBUG: shifting "<<ptrNode->values[i]<<std::endl;
+      #ifdef DEBUG_
+        std::cout<<"DEBUG: shifting "<<ptrNode->values[i]<<std::endl;
+      #endif
     }
     ptrNode->values[insertPos] = value; //insert value at front of node
-    // std::cout<<"insert in "<< ptrNode->values[insertPos]<<std::endl;
+    #ifdef DEBUG_
+      std::cout<<"insert in "<< ptrNode->values[insertPos]<<std::endl;
+    #endif
     ptrNode->count++; //update count
     stats_.ItemCount++;
     return;
@@ -335,6 +362,15 @@ void BList<T, Size>::SplitNode(BNode* &ptrNode){
     else if(i > mid)
       arrRight[arrRightIndex++] = ptrNode->values[i];
   }
+  // // assign remaining slots in sub arrays to zero
+  // while(arrLeftIndex<Size){
+  //   arrLeft[arrLeftIndex++] = static_cast<T>(0);
+  // }
+  // while(arrRightIndex<Size){
+  //   arrRight[arrRightIndex++] = static_cast<T>(0);
+  // }
+
+
   //create two nodes, link them into BList
   //BNode* NewLeftNode = new BNode();
   BNode* NewRightNode = new BNode();

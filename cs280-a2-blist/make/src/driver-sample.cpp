@@ -343,9 +343,9 @@ void test3_2()
   for (unsigned i = 0; i < size; i++) 
   {
     bl.insert(ia[i]);
-    DumpList(bl, true);
-    DumpList(bl);
-    std::cout << "==========================\n";
+    //DumpList(bl, true);
+    //DumpList(bl);
+    //std::cout << "==========================\n";
   }
   DumpList(bl, false);
   DumpList(bl, true);
@@ -374,9 +374,9 @@ void test3_4()
   for (unsigned i = 0; i < size; i++) 
   {
     bl.insert(ia[i]);
-    DumpList(bl, true);
-    DumpList(bl);
-    std::cout << "==========================\n";
+    // DumpList(bl, true);
+    // DumpList(bl);
+    // std::cout << "==========================\n";
   }
   DumpList(bl, false);
   DumpList(bl, true);
@@ -674,7 +674,7 @@ void test5_1()
 
   for (unsigned i = 0; i < size; i++)
     bl.push_back(ia[i]);
-
+std::cout<<"BREAKPT\n";
   DumpList(bl, true);
   DumpList(bl, false);
   for (unsigned i = 0; i < size; i++)
@@ -1707,11 +1707,11 @@ int main(int argc, char **argv)
       test2_16();
       break;
     case 3: 
-      // test3_1();
+      test3_1();
       test3_2();
       test3_4();
-      // test3_8();
-      // test3_16();
+      test3_8();
+      test3_16();
       break;
     case 4: 
       test4_1();
