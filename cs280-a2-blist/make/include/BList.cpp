@@ -8,40 +8,108 @@ BList<T, Size>::BList() : stats_(sizeof(BNode), 0, Size, 0){
   try{
     head_ = new BNode();
     tail_ = head_;
-
   }
   catch (const std::exception& e){
     throw(BListException(BListException::E_NO_MEMORY, e.what()));
   }
   stats_.NodeCount++;
   //tail_ = head_;
-}                          
+}
+
+// copy constructor
 template <typename T, unsigned Size>
 BList<T, Size>::BList(const BList &rhs){
-  // copy constructor
-  head_ = rhs.head_;
-  stats_ = rhs.GetStats();
+  //init pointers
+  BNode* rhsNodePtr = rhs.head_;
+  BNode* lhsNodePtr = nullptr;
+  BNode* prevNode = nullptr;
+
+  //loop through rhs Blist
+  while(rhsNodePtr){
+    try{
+      //create new node for an existing node in rhs Blist
+      lhsNodePtr = new BNode();
+    }
+    catch (const std::exception& e){
+      throw(BListException(BListException::E_NO_MEMORY, e.what()));
+    }
+    //update pointers
+    lhsNodePtr->prev = prevNode;
+    if(prevNode!=nullptr)
+      prevNode->next = lhsNodePtr;
+
+    //if first node, assign head_
+      if(prevNode == nullptr)
+        head_ = lhsNodePtr;
+
+    //assign values
+    lhsNodePtr->count = rhsNodePtr->count;
+    for(unsigned int i = 0; i < lhsNodePtr->count ;i++){
+      lhsNodePtr->values[i] = rhsNodePtr->values[i];
+    }
+    prevNode = lhsNodePtr;
+    rhsNodePtr = rhsNodePtr->next;
+  }
+
+  //assign other stuff
+  stats_.ArraySize = rhs.GetStats().ArraySize;
+  stats_.ItemCount = rhs.GetStats().ItemCount;
+  stats_.NodeCount = rhs.GetStats().NodeCount;
+  stats_.NodeSize = rhs.GetStats().NodeSize;
+  tail_ = lhsNodePtr;
 } 
 
 template <typename T, unsigned Size>
 BList<T, Size>::~BList(){
   // destructor
-  while (head_)
-  {
-    BNode* curNode = head_;
-    head_ = head_->next; // get next
-    delete curNode; // delete current
-  }
-  // set all to initial value
-  head_ = tail_ = nullptr;
-  stats_.NodeCount = stats_.ItemCount = 0;
-  // unsorted = true;
+  clear();
 }                         
 
+// assign operator
 template <typename T, unsigned Size>
 BList<T, Size>& BList<T, Size>::operator=(const BList &rhs){
-  // assign operator
-  return const_cast<BList&>(rhs);
+  if (this == &rhs)
+    return *this;
+  
+  clear(); // delete existing object/Blist
+  //init pointers
+  BNode* rhsNodePtr = rhs.head_;
+  BNode* lhsNodePtr = nullptr;
+  BNode* prevNode = nullptr;
+
+  //loop through rhs Blist
+  while(rhsNodePtr){
+    try{
+      //create new node for an existing node in rhs Blist
+      lhsNodePtr = new BNode();
+    }
+    catch (const std::exception& e){
+      throw(BListException(BListException::E_NO_MEMORY, e.what()));
+    }
+    //update pointers
+    lhsNodePtr->prev = prevNode;
+    if(prevNode!=nullptr)
+      prevNode->next = lhsNodePtr;
+
+    //if first node, assign head_
+      if(prevNode == nullptr)
+        head_ = lhsNodePtr;
+
+    //assign values
+    lhsNodePtr->count = rhsNodePtr->count;
+    for(unsigned int i = 0; i < lhsNodePtr->count ;i++){
+      lhsNodePtr->values[i] = rhsNodePtr->values[i];
+    }
+    prevNode = lhsNodePtr;
+    rhsNodePtr = rhsNodePtr->next;
+  }
+  //assign other stuff
+  stats_.ArraySize = rhs.GetStats().ArraySize;
+  stats_.ItemCount = rhs.GetStats().ItemCount;
+  stats_.NodeCount = rhs.GetStats().NodeCount;
+  stats_.NodeSize = rhs.GetStats().NodeSize;
+  tail_ = lhsNodePtr;
+  return *this;
 }
 
 // arrays will be unsorted, if calling either of these
@@ -136,12 +204,11 @@ void BList<T, Size>::push_front(const T& value){
 template <typename T, unsigned Size>
 void BList<T, Size>::insert(const T& value){
   #ifdef DEBUG_
-    std::cout<<"inserting "<<value<<" ";
+    std::cout<<"\ninserting "<<value<<" \n";
   #endif
   BNode* ptrNode = head_; //start at head node
 
-  //find position to insert
-  //search through every node
+  //find position to insert, search through every node
   while(ptrNode){
     for(unsigned int j=0; j< Size; j++){
       // base case: first item just push front
@@ -149,12 +216,30 @@ void BList<T, Size>::insert(const T& value){
         push_front(value); //basecase
         return;
       }
+
       // split node when value < item and node is full
-      if(value < ptrNode->values[j] && ptrNode->count >= Size){
-        SplitNode(ptrNode);
-          #ifdef DEBUG_
-            std::cout<<" ||| ";
-          #endif
+      if(value < ptrNode->values[j] && ptrNode->count == Size){
+        #ifdef DEBUG_
+          std::cout<<" ||| Spilting at"<<ptrNode->values[j]<< " ";
+        #endif
+        //if previous node is full and checking value is at position[0], split previous node
+        if(ptrNode->prev!=nullptr){
+          if(ptrNode->prev->count == Size && j == 0 && Size != 1){
+            // std::cout<<"Split Previous\n";
+            // std::cout<<"Before SplitNode at Node with "<<ptrNode->values[0]<<" at "<<ptrNode<<"\n";
+            // std::cout<<"Before SplitNode: prevNode->count: "<<ptrNode->prev->count<<std::endl;
+            // std::cout<<"Before SplitNode at prevNode with "<<ptrNode->prev->values[0]<<" at "<<ptrNode->prev<<"\n";
+            SplitNode(ptrNode->prev); //special case of favouring left node
+            // std::cout<<"After SplitNode: prevprev ptrNode->count: "<<ptrNode->prev->prev->count<<" with "<<ptrNode->prev->prev->values[0]<<std::endl;
+            // std::cout<<"After SplitNode: ptrNode->count: "<<ptrNode->prev->count<<" with "<<ptrNode->prev->values[0]<<std::endl;
+            ptrNode = ptrNode->prev; //loop back to preiovus node
+            continue;
+          }
+          else
+            SplitNode(ptrNode); //normal case of splitting
+        }
+        else
+            SplitNode(ptrNode); //normal case of splitting
       }
 
       // insert(before item) when value less than item and not check unassigned data
@@ -184,53 +269,125 @@ void BList<T, Size>::insert(const T& value){
       // split when at last node, last item 
       if(ptrNode->next == nullptr && j+1 == ptrNode->count ){
         if(ptrNode->count >= Size){ //and node is full 
+          #ifdef DEBUG_
+            std::cout<<" / ";
+          #endif
           SplitNode(ptrNode);
           if(Size>1)
             insertAt(value, ptrNode->next, ptrNode->next->count);
           else if(Size ==1)
             insertAt(value, ptrNode->next, 0);
-          #ifdef DEBUG_
-            std::cout<<" / ";
-          #endif
           return;
         }
         else{
-          // push_back(value);
-          insertAt(value, ptrNode, ptrNode->count); //insert in front since value > item
-          // std::cout<<" // ";
+          #ifdef DEBUG_
+            std::cout<<" // ";
+          #endif
+          insertAt(value, ptrNode, ptrNode->count); //insert/push front since value > item
           return;
         }
       }
 
+      //check next node[0], if smaller, insert here
       if(j >= ptrNode->count && value < ptrNode->next->values[0]){
-        //check next node[0], if smaller, insert here
-        insertAt(value, ptrNode, j);
         #ifdef DEBUG_
           std::cout<<" /// ";
+          if(ptrNode->prev!= nullptr)
+            std::cout<<"ptrNode->prev->count: "<<ptrNode->prev->count<<std::endl;
         #endif
+        insertAt(value, ptrNode, j);
         return;
       }
-      else{
-        //need to insert at next node..
-      }
-      
+      //else need to insert at next node..
     }
-          // std::cout<<" |D\n ";
     ptrNode = ptrNode->next;
   }
-  //if no suitable position, just pushback
 }
 
 template <typename T, unsigned Size>
 void BList<T, Size>::remove(int index){
-  if(index)
-    return;
+  // check for valid index
+  int maxCount = static_cast<int>(stats_.ItemCount + 1);
+  
+  if(index > maxCount || index < 0)
+    throw BListException(BListException::E_BAD_INDEX, "Wrong index provided");
+  
+  size_t position = index + 1; // check if is within current node
+
+  BNode* curNode = head_; // get node
+  
+  while (position > curNode->count)
+  {
+    position -= curNode->count;
+    curNode = curNode->next;
+  }
+  /*loop to move item forward*/
+  for (size_t i = position - 1; (i + 1) < curNode->count; ++i)
+    curNode->values[i] = curNode->values[i + 1];
+  
+  stats_.ItemCount--; // decrement
+
+  if (!(--curNode->count))
+  {
+    if (curNode->prev)
+      curNode->prev->next = curNode->next; // remove from list
+    else
+      head_ = curNode->next;
+    
+    if (curNode->next)
+      curNode->next->prev = curNode->prev; // remove from list
+    else
+      tail_ = curNode->prev;
+
+    delete curNode; // deallocate
+
+    stats_.NodeCount--; // decrement
+  }
+
 }
 
 template <typename T, unsigned Size>
 void BList<T, Size>::remove_by_value(const T& value){
-  if(head_->values[0] == value)
-    return;
+  BNode* curNode = head_; // get node
+  /*loop thru node*/
+  while (curNode)
+  {
+    for (size_t i = 0; i < curNode->count; ++i)
+    {
+      if (value == curNode->values[i])
+      {
+        for (size_t j = i; (j + 1) < curNode->count; ++j)
+          curNode->values[j] = curNode->values[j + 1];
+        
+        stats_.ItemCount--;
+        BNode* temp = curNode->prev;
+      
+        if (!(--(curNode->count)))
+        {
+          // check if is within current node
+          if (curNode->prev)
+            curNode->prev->next = curNode->next; 
+          else
+            head_ = curNode->next;
+          // check if is within current node
+          if (curNode->next)
+            curNode->next->prev = curNode->prev;
+          else
+            tail_ = curNode->prev;
+      
+          delete curNode; // deallocate
+          stats_.NodeCount--; // decrement
+        }
+        curNode = temp;
+        break;
+      }
+    }
+
+    if (!curNode)
+      curNode = head_;
+    else
+      curNode = curNode->next; // iterate
+  }
 }
 
 template <typename T, unsigned Size>
@@ -298,13 +455,21 @@ size_t BList<T, Size>::size() const{
 template <typename T, unsigned Size>
 void BList<T, Size>::clear(){
   // delete all nodes
+  while (head_)
+  {
+    BNode* curNode = head_;
+    head_ = head_->next; // get next
+    delete curNode; // delete current
+  }
+  // set all to initial value
+  head_ = tail_ = nullptr;
+  stats_.NodeCount = stats_.ItemCount = 0;
 }          
 
 template <typename T, unsigned Size>
 BListStats BList<T, Size>::GetStats() const{
   return stats_;
 }
-
 
 template <typename T, unsigned Size>
 size_t BList<T, Size>::nodesize(void)
@@ -327,7 +492,9 @@ void BList<T, Size>::copy_to_(T* arrSrc, unsigned int size, T* arrDest){
 
 template <typename T, unsigned Size>
 void BList<T, Size>::insertAt(T value, BNode* ptrNode, int insertPos){
-  // std::cout<<"DEBUG: count  "<<ptrNode->count<<std::endl;
+  #ifdef DEBUG_
+    std::cout<<"DEBUG: count  "<<ptrNode->count<<std::endl;
+  #endif
   if(ptrNode->count < Size){
     //insert and shift the rest up by one
     //shift current values up by one position
@@ -341,6 +508,7 @@ void BList<T, Size>::insertAt(T value, BNode* ptrNode, int insertPos){
     ptrNode->values[insertPos] = value; //insert value at front of node
     #ifdef DEBUG_
       std::cout<<"insert in "<< ptrNode->values[insertPos]<<std::endl;
+      std::cout<<"inserted in after "<< ptrNode->values[insertPos-1]<<std::endl;
     #endif
     ptrNode->count++; //update count
     stats_.ItemCount++;
@@ -349,7 +517,11 @@ void BList<T, Size>::insertAt(T value, BNode* ptrNode, int insertPos){
 }
 
 template <typename T, unsigned Size>
-void BList<T, Size>::SplitNode(BNode* &ptrNode){
+void BList<T, Size>::SplitNode(BNode* ptrNode){
+  if(ptrNode == nullptr)
+    return;
+  // std::cout<<"SplitNode at Node with "<<ptrNode->values[0]<<" at "<<ptrNode<<"\n";
+    
   //create two sub array and assign each with values
   T* arrLeft = new T[Size];
   T* arrRight = new T[Size];
@@ -357,10 +529,16 @@ void BList<T, Size>::SplitNode(BNode* &ptrNode){
   unsigned int arrLeftIndex = 0;
   unsigned int arrRightIndex = 0;
   for(unsigned int i=0; i<ptrNode->count; i++){
-    if(i <= mid)
+    if(i <= mid){
       arrLeft[arrLeftIndex++] = ptrNode->values[i];
-    else if(i > mid)
+      // std::cout<<"assigned "<<ptrNode->values[i]<<" into arrleft\n";
+    }
+    else if(i > mid){
       arrRight[arrRightIndex++] = ptrNode->values[i];
+      // std::cout<<"assigned "<<ptrNode->values[i]<<" into arrRight\n";
+    }
+    // std::cout<<"mid: "<<mid<<std::endl;
+    // std::cout<<"arrLeftIndex: "<<arrLeftIndex<<std::endl;
   }
   // // assign remaining slots in sub arrays to zero
   // while(arrLeftIndex<Size){
@@ -370,32 +548,32 @@ void BList<T, Size>::SplitNode(BNode* &ptrNode){
   //   arrRight[arrRightIndex++] = static_cast<T>(0);
   // }
 
-
   //create two nodes, link them into BList
-  //BNode* NewLeftNode = new BNode();
   BNode* NewRightNode = new BNode();
 
-  BNode* PrevNode = ptrNode->prev;
-  BNode* NextNode = ptrNode->next;
-  if(PrevNode != nullptr){
-    PrevNode->next = ptrNode;
-    ptrNode->prev = PrevNode;
-  }
 
-  ptrNode->next = NewRightNode;
+  NewRightNode->next = ptrNode->next;
   NewRightNode->prev = ptrNode;
-  
-  if(NextNode != nullptr){
-    NewRightNode->next = NextNode;
-    NextNode->prev = NewRightNode;
+  if(ptrNode->next != nullptr){
+    // std::cout<<"BREAKPT: ptrNode at "<<ptrNode<<"\tNextNode->prev "<<ptrNode->next->prev<<" with "<<ptrNode->next->prev->values[0]<<std::endl;
+    ptrNode->next->prev = NewRightNode;
   }
-
+  ptrNode->next = NewRightNode;
+    // std::cout<<"BREAKPT: ptrNode at "<<ptrNode<<"\tNextNode->prev "<<ptrNode->next->prev<<" with "<<ptrNode->next->prev->values[0]<<std::endl;
+  
+  
   ptrNode->count = arrLeftIndex;
   NewRightNode->count = arrRightIndex;
   // printf("DEBUG in split: %u, %u\n", arrLeftIndex, arrRightIndex);
 
   copy_to_(arrLeft, Size, ptrNode->values);
   copy_to_(arrRight, Size, NewRightNode->values);
+  // std::cout<<"After copy_to_: ptrNode->count: "<<ptrNode->count<<" with "<<ptrNode->values[0]
+  //   <<" at "<<ptrNode<<std::endl;
+  // std::cout<<"After copy_to_: NewRightNode->count: "<<NewRightNode->count<<" with "<<NewRightNode->values[0]
+  //   <<" at "<<NewRightNode<<std::endl;
+  delete [] arrLeft;
+  delete [] arrRight;
   //printf("%p, %p\n", (void*)ptrNode, (void*)ptrNode->next);
   //printf("%p, %p, %p, %p\n", (void*)PrevNode, (void*)NewLeftNode, (void*)NewRightNode, (void*)NextNode);
   //delete splited node
@@ -413,4 +591,29 @@ int BList<T, Size>::SearchFor(const T& value, BNode* node)const{
       return i;
   }
   return -1;
+}
+
+
+template <typename T, unsigned Size>
+void BList<T, Size>::linkTwoNodes(BNode* &prev_node, BNode* new_node)
+{
+    /*1. check if the given prev_node is NULL */
+    if (prev_node == NULL)
+    {
+        std::cout<<"the given previous node cannot be NULL";
+        return;
+    }
+ 
+    /* 4. Make next of new node as next of prev_node */
+    new_node->next = prev_node->next;
+ 
+    /* 5. Make the next of prev_node as new_node */
+    prev_node->next = new_node;
+ 
+    /* 6. Make prev_node as previous of new_node */
+    new_node->prev = prev_node;
+ 
+    /* 7. Change previous of new_node's next node */
+    if (new_node->next != NULL)
+        new_node->next->prev = new_node;
 }

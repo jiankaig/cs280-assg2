@@ -151,8 +151,9 @@ class BList
     T* ptrToItem;
     void copy_to_(T* arrSrc, unsigned int size, T* arrDest);
     void insertAt(T value, BNode* node, int position);
-    void SplitNode(BNode* &node);
+    void SplitNode(BNode* node);
     int SearchFor(const T& value, BNode* node)const;
+    void linkTwoNodes(BNode* &prev_node, BNode* new_node);
 
 };
 

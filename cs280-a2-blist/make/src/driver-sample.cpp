@@ -70,7 +70,7 @@ void DumpList(const BList<T, Size>& blist, bool flat = false)
     {
       std::cout << node->values[i] << " ";
     }
-
+    // std::cout<<node; //self-add
     if (!flat)
       std::cout << std::endl;
     node = node->next;
@@ -312,9 +312,9 @@ void test3_1()
   for (unsigned i = 0; i < size; i++) 
   {
     bl.insert(ia[i]);
-    //DumpList(bl, true);
-    //DumpList(bl);
-    //std::cout << "==========================\n";
+    // DumpList(bl, true);
+    // DumpList(bl);
+    // std::cout << "==========================\n";
   }
   DumpList(bl, false);
   DumpList(bl, true);
@@ -516,9 +516,9 @@ void test4_2()
   for (unsigned i = 0; i < size; i++) 
   {
     bl.insert(ia[i]);
-    //DumpList(bl, true);
-    //DumpList(bl);
-    //std::cout << "==========================\n";
+    // DumpList(bl, true);
+    // DumpList(bl);
+    // std::cout << "==========================\n";
   }
   DumpList(bl, false);
 
@@ -674,7 +674,7 @@ void test5_1()
 
   for (unsigned i = 0; i < size; i++)
     bl.push_back(ia[i]);
-std::cout<<"BREAKPT\n";
+
   DumpList(bl, true);
   DumpList(bl, false);
   for (unsigned i = 0; i < size; i++)
@@ -1273,7 +1273,7 @@ void test9_1()
 
   DumpList(bl, true);
   DumpStats(bl);
-
+  
   delete [] ia;
 }
 
@@ -1603,8 +1603,11 @@ void testB()
   std::cout << "nodesize is " << bl.nodesize() << std::endl;
 
   bl.insert(20);
+  // DumpList(bl, false); //self-added
   bl.insert(40);
+  // DumpList(bl, false); //self-added
   bl.insert(30);
+  // DumpList(bl, false); //self-added
   bl.insert(50);
   DumpList(bl, false);  
   bl.insert(35);
