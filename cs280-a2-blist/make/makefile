@@ -55,3 +55,8 @@ out2: out
 diff: out
 	@echo "testing with sample output"
 	diff $(BIN)/myout.txt $(TEST)/output-sample-LP64.txt
+
+docs: 
+	@echo "Generating Doxygen..."
+	doxygen Doxyfile
+	
