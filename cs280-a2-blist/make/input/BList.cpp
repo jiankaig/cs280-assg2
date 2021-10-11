@@ -9,31 +9,33 @@
  *    This file describes the interface to BList, BListException and BListStats
  *    This file contains the declaration of the following functions for
  *    the BList class:
- * 
+ * @brief 
  *    Public functions of BList include:
- *      Constructor
- *      Destructor
- *      operator=
- *      push_back
- *      push_front
- *      insert   
- *      remove
- *      remove_by_value
- *      find
- *      operator[]
- *      size
- *      clear
- *      nodesize
- *      GetHead
- *      GetStats
+ *      Constructor, 
+ *      Destructor, 
+ *      operator=, 
+ *      push_back, 
+ *      push_front, 
+ *      insert, 
+ *      remove, 
+ *      remove_by_value, 
+ *      find, 
+ *      operator[], 
+ *      size, 
+ *      clear, 
+ *      nodesize, 
+ *      GetHead, 
+ *      GetStats 
+ * @brief 
  *    Private methods include:
- *      copy_to_
- *      insertAt
- *      SearchFor
+ *      copy_to_, 
+ *      insertAt, 
+ *      SearchFor, 
  *      SplitNode
- *      
+ * @brief     
  *    Hours spent on this assignment: 50
- *    Specific portions that gave you the most trouble: optimisation of free.
+ * @brief 
+ *    Specific portions that gave you the most trouble: insert with left priorty
  * @version 0.1
  * @date 2021-10-11
  * 
