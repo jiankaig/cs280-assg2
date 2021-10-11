@@ -22,7 +22,7 @@ $(BIN)/$(EXECUTABLE): $(SRC)/*.cpp
 
 clean:
 	@echo "🧹 Clearing..."
-	-rm $(BIN)/*
+	-rm -rfv $(BIN)/*
 	
 out: run
 	./$(BIN)/$(EXECUTABLE) > $(BIN)/myout.txt
