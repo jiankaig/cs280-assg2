@@ -70,7 +70,7 @@ void DumpList(const BList<T, Size>& blist, bool flat = false)
     {
       std::cout << node->values[i] << " ";
     }
-    // std::cout<<node; //self-add
+
     if (!flat)
       std::cout << std::endl;
     node = node->next;
@@ -312,9 +312,9 @@ void test3_1()
   for (unsigned i = 0; i < size; i++) 
   {
     bl.insert(ia[i]);
-    // DumpList(bl, true);
-    // DumpList(bl);
-    // std::cout << "==========================\n";
+    //DumpList(bl, true);
+    //DumpList(bl);
+    //std::cout << "==========================\n";
   }
   DumpList(bl, false);
   DumpList(bl, true);
@@ -374,9 +374,9 @@ void test3_4()
   for (unsigned i = 0; i < size; i++) 
   {
     bl.insert(ia[i]);
-    // DumpList(bl, true);
-    // DumpList(bl);
-    // std::cout << "==========================\n";
+    //DumpList(bl, true);
+    //DumpList(bl);
+    //std::cout << "==========================\n";
   }
   DumpList(bl, false);
   DumpList(bl, true);
@@ -486,6 +486,7 @@ void test4_1()
     //std::cout << "==========================\n";
   }
   DumpList(bl, false);
+
   print_subscript(bl);
   std::cout << std::endl << std::endl;
 
@@ -516,9 +517,9 @@ void test4_2()
   for (unsigned i = 0; i < size; i++) 
   {
     bl.insert(ia[i]);
-    // DumpList(bl, true);
-    // DumpList(bl);
-    // std::cout << "==========================\n";
+    //DumpList(bl, true);
+    //DumpList(bl);
+    //std::cout << "==========================\n";
   }
   DumpList(bl, false);
 
@@ -846,7 +847,7 @@ void test5_16()
 // insert/find
 void test6_16()
 {
-  std::cout << "==================== tes6_16 ====================\n";
+  std::cout << "==================== test6_16 ====================\n";
   const unsigned asize = 16;
 
   BList<int, asize> bl;
@@ -884,7 +885,7 @@ void test6_16()
 
 void test6_64()
 {
-  std::cout << "==================== test5_64 ====================\n";
+  std::cout << "==================== test6_64 ====================\n";
   const unsigned asize = 64;
 
   BList<int, asize> bl;
@@ -922,7 +923,7 @@ void test6_64()
 
 void test6_512()
 {
-  std::cout << "==================== test5_512 ====================\n";
+  std::cout << "==================== test6_512 ====================\n";
   const unsigned asize = 512;
 
   BList<int, asize> bl;
@@ -1273,7 +1274,7 @@ void test9_1()
 
   DumpList(bl, true);
   DumpStats(bl);
-  
+
   delete [] ia;
 }
 
@@ -1603,11 +1604,8 @@ void testB()
   std::cout << "nodesize is " << bl.nodesize() << std::endl;
 
   bl.insert(20);
-  // DumpList(bl, false); //self-added
   bl.insert(40);
-  // DumpList(bl, false); //self-added
   bl.insert(30);
-  // DumpList(bl, false); //self-added
   bl.insert(50);
   DumpList(bl, false);  
   bl.insert(35);
@@ -1655,17 +1653,17 @@ void testD()
 
 }
 
-int main(int argc, char **argv)
+int main(void)
 {
-   int test ;
+  // int test ;
   //std::cin>>test;
-  if (argc > 1)
-    test = std::atoi(argv[1]);
+  //if (argc > 1)
+  //  test = std::atoi(argv[1]);
  
-  /*int test_num = 0;
-  if (argc > 1)
-    test_num = std::atoi(argv[1]);
- std::cin>>test_num;
+  int test_num = 0;
+ //if (argc > 1)
+ //  test_num = std::atoi(argv[1]);
+ //std::cin>>test_num;
   typedef void (*Test)(void);
   Test Tests[] = {test1_1,   test1_2,   test1_4,   test1_8,    test1_16, //  1 -  5, push_front
                   test2_1,   test2_2,   test2_4,   test2_8,    test2_16, //  6 - 10, push_back
@@ -1691,82 +1689,80 @@ int main(int argc, char **argv)
   else if (test_num > 0 && test_num <= num)
   {
       Tests[test_num - 1]();
-  }*/
-
-  switch (test)
-  {
-    case 1:
-      test1_1();
-      test1_2();
-      test1_4();
-      test1_8();
-      test1_16();
-      break;
-    case 2: 
-      test2_1();
-      test2_2();
-      test2_4();
-      test2_8();
-      test2_16();
-      break;
-    case 3: 
-      test3_1();
-      test3_2();
-      test3_4();
-      test3_8();
-      test3_16();
-      break;
-    case 4: 
-      test4_1();
-      test4_2();
-      test4_4();
-      test4_8();
-      test4_16();
-      break;
-    case 5: 
-      test5_1();
-      test5_2();
-      test5_4();
-      test5_8();
-      test5_16();
-      break;
-    case 6: 
-      test6_16();
-      test6_64();
-      test6_512();
-      break;
-    case 7: 
-      test7_1();
-      test7_2();
-      test7_4();
-      test7_8();
-      break;
-    case 8: 
-      test8_1();
-      test8_2();
-      test8_4();
-      test8_8();
-      break;
-    case 9: 
-      test9_1();
-      test9_4();
-      break;
-    case 10: 
-      test10_1();
-      test10_4();
-      break;
-    case 11: 
-      test11_8();
-      break;
-    case 12: 
-      test12_8();
-      break;
-    case 13: 
-      testA();
-      testB();
-      testC();
-      testD();
-      break;
   }
+
+  //switch (test)
+  //{
+  //  case 1:
+  //    test1_1();
+  //    test1_2();
+  //    test1_4();
+  //    test1_8();
+  //    test1_16();
+  //    break;
+  //  case 2: 
+  //    test2_1();
+  //    test2_2();
+  //    test2_4();
+  //    test2_8();
+  //    test2_16();
+  //    break;
+  //  case 3: 
+  //    test3_1();
+  //    test3_2();
+  //    test3_4();
+  //    test3_8();
+  //    test3_16();
+  //    break;
+  //  case 4: 
+  //    test4_1();
+  //    test4_2();
+  //    test4_4();
+  //    test4_8();
+  //    test4_16();
+  //   
+  //    test5_1();
+  //    test5_2();
+  //    test5_4();
+  //    test5_8();
+  //    test5_16();
+  //     
+  //    test6_16();
+  //    test6_64();
+  //    test6_512();
+  //    break;
+  //  case 7: 
+  //    test7_1();
+  //    test7_2();
+  //    test7_4();
+  //    test7_8();
+  //    break;
+  //  case 8: 
+  //    test8_1();
+  //    test8_2();
+  //    test8_4();
+  //    test8_8();
+  //    break;
+  //  case 9: 
+  //    test9_1();
+  //    test9_4();
+  //    break;
+  //  case 10: 
+  //    test10_1();
+  //    test10_4();
+  //    break;
+  //  case 11: 
+  //    test11_8();
+  //    break;
+  //  case 12: 
+  //    test12_8();
+  //    break;
+  //  case 13: 
+  //    testA();
+  //    testB();
+  //    testC();
+  //    testD();
+  //    break;
+  //}
   return 0;
 }

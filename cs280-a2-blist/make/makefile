@@ -23,8 +23,13 @@ $(BIN)/$(EXECUTABLE): $(SRC)/*.cpp
 clean:
 	@echo "🧹 Clearing..."
 	-rm $(BIN)/*
-
+	
 out: run
+	./$(BIN)/$(EXECUTABLE) > $(BIN)/myout.txt
+	diff $(BIN)/myout.txt $(TEST)/output-sample-LP64.txt > $(BIN)/diff.txt
+	diff $(BIN)/myout.txt $(TEST)/output-sample-LP64.txt
+
+out1: run
 	./$(BIN)/$(EXECUTABLE) 1 > $(BIN)/myout1.txt
 	./$(BIN)/$(EXECUTABLE) 2 > $(BIN)/myout2.txt
 	./$(BIN)/$(EXECUTABLE) 3 > $(BIN)/myout3.txt

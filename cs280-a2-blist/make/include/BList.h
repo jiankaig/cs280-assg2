@@ -1,3 +1,46 @@
+/**
+ * @file BList.h
+ * @author Giam Jian Kai (jiankai.g\@digipen.edu)
+ * @par email: jiankai.g\@digipen.edu
+ * @par Digipend Login: jiankai.g
+ * @par Course: CS280
+ * @par Assignment #2
+ * @brief 
+ *    This file describes the interface to BList, BListException and BListStats
+ *    This file contains the declaration of the following functions for
+ *    the BList class:
+ * 
+ *    Public functions of BList include:
+ *      Constructor
+ *      Destructor
+ *      operator=
+ *      push_back
+ *      push_front
+ *      insert   
+ *      remove
+ *      remove_by_value
+ *      find
+ *      operator[]
+ *      size
+ *      clear
+ *      nodesize
+ *      GetHead
+ *      GetStats
+ *    Private methods include:
+ *      copy_to_
+ *      insertAt
+ *      linkTwoNodes
+ *      SearchFor
+ *      SplitNode
+ *      
+ *    Hours spent on this assignment: 50
+ *    Specific portions that gave you the most trouble: optimisation of free.
+ * @version 0.1
+ * @date 2021-10-11
+ * 
+ * @copyright Copyright (c) 2021
+ * 
+ */
 ////////////////////////////////////////////////////////////////////////////////
 #ifndef BLIST_H
 #define BLIST_H
@@ -148,12 +191,13 @@ class BList
     // Other private data and methods you may need ...
     enum State{FAIL, SUCCESS, ERROR = -1};
     BListStats stats_;
-    T* ptrToItem;
+
+    // Private methods
     void copy_to_(T* arrSrc, unsigned int size, T* arrDest);
     void insertAt(T value, BNode* node, int position);
-    void SplitNode(BNode* node);
-    int SearchFor(const T& value, BNode* node)const;
     void linkTwoNodes(BNode* &prev_node, BNode* new_node);
+    int SearchFor(const T& value, BNode* node)const;
+    void SplitNode(BNode* node);
 
 };
 
