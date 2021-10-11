@@ -26,6 +26,7 @@
  *      nodesize
  *      GetHead
  *      GetStats
+ * 
  *    Private methods include:
  *      copy_to_
  *      insertAt

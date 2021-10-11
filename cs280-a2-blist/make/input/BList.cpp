@@ -44,7 +44,7 @@
 #include "BList.h"
 
 /**
- * @fn BList()
+ * @fn BList<T, Size>::BList
  * @brief Construct a new BList<T, Size>::BList object
  * 
  * @tparam T templated data type to be stored
@@ -64,7 +64,7 @@ BList<T, Size>::BList() : stats_(sizeof(BNode), 0, Size, 0){
 }
 
 /**
- * @fn BList(const BList &rhs)
+ * @fn BList<T, Size>::BList
  * @brief Copy Constructor of a new BList<T, Size>::BList object
  * 
  * @tparam T 
@@ -114,7 +114,7 @@ BList<T, Size>::BList(const BList &rhs){
 } 
 
 /**
- * @fn ~BList()
+ * @fn BList<T, Size>::~BList
  * @brief Destroy the BList<T, Size>::BList object
  * 
  * @tparam T 
@@ -127,7 +127,7 @@ BList<T, Size>::~BList(){
 }                         
 
 /**
- * @fn operator=(const BList &rhs)
+ * @fn BList<T, Size>::operator=(const BList &rhs)
  * @brief assignment operator overload
  * 
  * @tparam T 
@@ -182,7 +182,7 @@ BList<T, Size>& BList<T, Size>::operator=(const BList &rhs){
 }
 
 /**
- * @fn void push_back(const T& value)
+ * @fn BList<T, Size>::push_back
  * @brief Push back value to the end of last node, 
  *    arrays will be unsorted, if calling either of these
  * 
@@ -236,7 +236,7 @@ void BList<T, Size>::push_back(const T& value){
 }
 
 /**
- * @fn void push_front(const T& value)
+ * @fn BList<T, Size>::push_front
  * @brief Push front value to the start of first/head node, 
  *    arrays will be unsorted, if calling either of these
  * 
@@ -284,7 +284,7 @@ void BList<T, Size>::push_front(const T& value){
 }
 
 /**
- * @fn void insert(const T& value)
+ * @fn BList<T, Size>::insert
  * @brief insert a value into BList, arrays will be sort if calling insert only.
  *    nodes/arrays required to be inserted into that are full,
  *     will be splitted into two equal halves.
@@ -368,7 +368,7 @@ void BList<T, Size>::insert(const T& value){
 }
 
 /**
- * @fn void remove(int index)
+ * @fn BList<T, Size>::remove
  * @brief remove data by index
  * 
  * @tparam T 
@@ -419,7 +419,7 @@ void BList<T, Size>::remove(int index){
 }
 
 /**
- * @fn void remove_by_value(const T& value)
+ * @fn BList<T, Size>::remove_by_value
  * @brief remove data by searching for value
  * 
  * @tparam T 
@@ -546,7 +546,7 @@ void BList<T, Size>::clear(){
 }          
 
 /**
- * @fn BListStats GetStats()
+ * @fn BList<T, Size>::GetStats
  * @brief getter function to access statiscal information
  * 
  * @tparam T 
@@ -559,7 +559,7 @@ BListStats BList<T, Size>::GetStats() const{
 }
 
 /**
- * @fn size_t nodesize()
+ * @fn BList<T, Size>::nodesize
  * @brief returns the sizeof a BNode
  * 
  * @tparam T 
@@ -573,7 +573,7 @@ size_t BList<T, Size>::nodesize(void)
 }
 
 /**
- * @fn const BNode* GetHead()
+ * @fn BList<T, Size>::GetHead
  * @brief getter function for head node
  * 
  * @tparam T 
@@ -587,7 +587,7 @@ const typename BList<T, Size>::BNode* BList<T, Size>::GetHead() const
 }
 
 /**
- * @fn void copy_to_(T* arrSrc, unsigned int size, T* arrDest)
+ * @fn BList<T, Size>::copy_to_
  * @brief helper function to copy data from source 
  *    array to destination array
  * 
@@ -605,7 +605,7 @@ void BList<T, Size>::copy_to_(T* arrSrc, unsigned int size, T* arrDest){
 }
 
 /**
- * @fn void insertAt(T value, BNode* ptrNode, int insertPos)
+ * @fn BList<T, Size>::insertAt
  * @brief insert value at choosen position of a node
  *    this function asumes that array in node is not full.
  * 
@@ -632,7 +632,7 @@ void BList<T, Size>::insertAt(T value, BNode* ptrNode, int insertPos){
 }
 
 /**
- * @fn int SearchFor(const T& value, BNode* node)
+ * @fn BList<T, Size>::SearchFor
  * @brief helper function to search for value in node
  * 
  * @tparam T 
@@ -653,7 +653,7 @@ int BList<T, Size>::SearchFor(const T& value, BNode* node)const{
 }
 
 /**
- * @fn void SplitNode(BNode* ptrNode)
+ * @fn BList<T, Size>::SplitNode
  * @brief helper function to split a node into two nodes
  *    with equal halves. 
  * 

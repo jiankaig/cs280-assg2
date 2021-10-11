@@ -193,9 +193,9 @@ class BList
 
     // Private methods
     void copy_to_(T* arrSrc, unsigned int size, T* arrDest);
-    void insertAt(T value, BNode* node, int position);
+    void insertAt(T value, BNode* ptrNode, int insertPos);
     int SearchFor(const T& value, BNode* node)const;
-    void SplitNode(BNode* node);
+    void SplitNode(BNode* ptrNode);
 
 };
 
